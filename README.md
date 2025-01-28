@@ -25,6 +25,11 @@ fork 自 [im-select](https://github.com/keaising/im-select.nvim)
 
 ## DEMO
 
+<video width="600" controls>
+  <source src="./demo/hybridIm.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 ## 1. 安装与检查可执行文件
 
 `im-select.nvim` 使用可执行文件切换输入法
@@ -158,7 +163,7 @@ $ ibus engine xkb:us::eng
 
 ```lua
 {
-    "keaising/im-select.nvim",
+    "SilverofLight/im-select.nvim",
     config = function()
         require("im_select").setup({})
     end,
@@ -169,7 +174,7 @@ $ ibus engine xkb:us::eng
 
 ```lua
 {
-    "keaising/im-select.nvim",
+    "SilverofLight/im-select.nvim",
     config = function()
         require('im_select').setup({
             -- IM will be set to `default_im_select` in `normal` mode

@@ -23,6 +23,13 @@ Current version works for NeoVim on:
 
 Other frameworks on Linux's support is welcome!
 
+## DEMO
+
+<video width="600" controls>
+  <source src="./demo/hybridIm.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 ## 1. Install and check binary
 
 `im-select.nvim` use binary tools to switch IM, you need to:
@@ -156,7 +163,7 @@ A good-enough minimal config in Lazy.nvim
 
 ```lua
 {
-    "keaising/im-select.nvim",
+    "SilverofLight/im-select.nvim",
     config = function()
         require("im_select").setup({})
     end,
@@ -167,7 +174,7 @@ Options with its default values
 
 ```lua
 {
-    "keaising/im-select.nvim",
+    "SilverofLight/im-select.nvim",
     config = function()
         require('im_select').setup({
             -- IM will be set to `default_im_select` in `normal` mode
