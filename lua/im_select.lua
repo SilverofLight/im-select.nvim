@@ -191,6 +191,42 @@ local function restore_previous_im()
     end
 end
 
+local function hybrid_im_mode()
+  local line = vim.fn.getline(".")
+  local col = vim.fn.col(".") - 2
+  local char_now_is_english = true
+  local char_before_space_is_english = true
+  if col > 0 then
+      local char = line:sub(col, col)
+      if char:match("[%a%p%d%s]") then
+          -- vim.notify("English character or symbol detected: " .. char, vim.log.levels.INFO)
+      else
+          -- vim.notify("Non-English character detected: " .. char, vim.log.levels.INFO)
+          char_now_is_english = false
+      end
+  end
+
+  local space_pos = line:sub(1, col):find("%s[^%s]*$")
+  if space_pos then
+      local prev_char = line:sub(space_pos - 1, space_pos - 1)
+      -- vim.notify("Character before last space: " .. prev_char, vim.log.levels.INFO)
+      if prev_char:match("[%a%p%d%s]") then
+          -- vim.notify("English character or symbol detected: " .. prev_char, vim.log.levels.INFO)
+      else
+          -- vim.notify("Non-English character detected: " .. prev_char, vim.log.levels.INFO)
+          char_before_space_is_english = false
+      end
+  end
+
+  if char_now_is_english == false then
+    restore_default_im()
+    -- vim.notify("restore default im", vim.log.levels.INFO)
+  elseif char_now_is_english == true and char_before_space_is_english == false then
+    restore_previous_im()
+    -- vim.notify("restore previous im", vim.log.levels.INFO)
+  end
+end
+
 M.setup = function(opts)
     if not is_supported() then
         return
@@ -229,7 +265,8 @@ M.setup = function(opts)
             local line = vim.fn.getline(".")
             local col = vim.fn.col(".") - 1
             if col > 0 and line:sub(col, col) == " " then
-                vim.notify("Space detected in insert mode", vim.log.levels.INFO)
+                -- vim.notify("Space detected in insert mode", vim.log.levels.INFO)
+                hybrid_im_mode()
             end
         end,
         group = group_id,
