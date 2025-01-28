@@ -1,20 +1,18 @@
 # im-select.nvim
 
-中文/[English](./readme/README.md)
+[中文](../README.md)/English
 
-fork 自 [im-select](https://github.com/keaising/im-select.nvim)
+Based on keaising/im-select.nvim, a hybrid input feature has been added. It can be enabled in the configuration with `hybrid_mode = true`, and it is set to `false` by default.
 
-在 keaising/im-select.nvim 的基础上，添加了一个用于混合输入的功能，在配置中使用 hybrid_mode = true 设置，默认为 false 
+When the hybrid input mode is enabled, it can automatically determine whether to switch the input method after entering a space. If the character before the space is a Chinese character or a full-width symbol, it switches to the default input method (which is usually set to English input method).
 
-开启混合输入模式后，可以在输入空格后自动判断是否应该切换输入法，如果输入空格前输入的是中文字符或全角符号，则切换为默认输入法（一般都会设置为英文输入法吧）
+If the character before the space is English, it checks whether the character before this word is an English character. If it is, it does nothing; otherwise, it switches to the previous input method.
 
-如果空格前是英文，则判断这个单词之前是否为英文字符，如果是，什么都不做，否则切换为之前的输入法。
+Switch Input Method automatically depends on NeoVim's edit mode.
 
-自动在 NeoVim 中切换输入法
+The old vim plugins (such as [im-select](https://github.com/daipeihust/im-select)) works weird on my Macbook, so I just create this im-select in pure lua for NeoVim, it works charmingly!
 
-旧插件 [im-select](https://github.com/daipeihust/im-select) 近在 Macbook 上有效，我只是使用纯 lua 语言写了这个 im-select 插件。
-
-这个插件可以工作在：
+Current version works for NeoVim on:
 
 - macOS
 - Windows and WSL
@@ -23,26 +21,27 @@ fork 自 [im-select](https://github.com/keaising/im-select.nvim)
   - Fcitx(only switch between inactive and active)
   - IBus
 
-## DEMO
+Other frameworks on Linux's support is welcome!
 
-## 1. 安装与检查可执行文件
+## 1. Install and check binary
 
-`im-select.nvim` 使用可执行文件切换输入法
+`im-select.nvim` use binary tools to switch IM, you need to:
 
-1. 在不同 OS 上安装可执行对应程序
-2. 确保 NeoVim 可以读取对应程序
+1. Install binary tools on different OS.
+2. Make sure the executable file in a path that NeoVim can read them.
 
 ### 1.1 Windows / WSL
 
-#### 安装
+#### Install
 
-请安装 `im-select.exe` 并放入 `PATH`
+Please install `im-select.exe` and put it into your `PATH`.
 
 Download URL: [im-select](https://github.com/daipeihust/im-select)
+(For `x64` platform, please download the `64-bit` version.)
 
-#### 检查
+#### Check
 
-你可以使用以下命令检查 `im-select` 是否可用
+You can check if the `im-select` executable can be properly accessed from Neovim/Vim by running the following command from your Command Prompt:
 
 ```bash
 # find the command
@@ -55,7 +54,7 @@ $ im-select.exe
 $ im-select.exe 1033
 ```
 
-或者直接在 NeoVim 中使用以下程序
+Or run shell command directly from NeoVim
 
 ```bash
 :!where im-select.exe
@@ -65,16 +64,15 @@ $ im-select.exe 1033
 
 ### 1.2 macOS
 
-#### 安装
+#### Install
 
 Please install `macism`
-请安装 `macism`
 
 Download URL: [macism](https://github.com/laishulu/macism)
 
-#### 检查
+#### Check
 
-在 bash/zsh 中检查
+Check installation in bash/zsh
 
 ```bash
 # find binary
@@ -88,7 +86,7 @@ com.apple.keylayout.ABC
 $ macism com.apple.keylayout.ABC
 ```
 
-在 NeoVim 中检查
+Check in NeoVim
 
 ```bash
 :!which macism
@@ -96,13 +94,13 @@ $ macism com.apple.keylayout.ABC
 
 ### 1.3 Linux
 
-#### 安装
+#### Install
 
-请使用其中一个输入法： Fcitx5/Fcitx/IBus
+Please install and config one of Input Methods: Fcitx / Fcitx5 / IBus
 
-#### 检查
+#### Check
 
-在 bash/zsh 中检查
+Check installation in bash/zsh
 
 **> Fcitx**
 
@@ -143,7 +141,7 @@ $ ibus engine
 $ ibus engine xkb:us::eng
 ```
 
-在 NeoVim 中检查
+Check in NeoVim
 
 ```bash
 # find
@@ -152,9 +150,9 @@ $ ibus engine xkb:us::eng
 :!which ibus
 ```
 
-## 2. 安装插件
+## 2. Install and setup this plugin
 
-极简配置
+A good-enough minimal config in Lazy.nvim
 
 ```lua
 {
@@ -165,7 +163,7 @@ $ ibus engine xkb:us::eng
 }
 ```
 
-默认配置
+Options with its default values
 
 ```lua
 {
@@ -204,8 +202,6 @@ $ ibus engine xkb:us::eng
 
             -- Async run `default_command` to switch IM or not
             async_switch_im = true
-
-            -- hybrid_mode
         })
     end,
 }
