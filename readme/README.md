@@ -25,10 +25,7 @@ Other frameworks on Linux's support is welcome!
 
 ## DEMO
 
-<video width="600" controls>
-  <source src="./demo/hybridIm.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+[DEMO](https://youtu.be/wRJ-rMcvqTk)(youtube)
 
 ## 1. Install and check binary
 
