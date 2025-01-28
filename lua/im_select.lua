@@ -42,6 +42,8 @@ local C = {
     -- default input method in normal mode.
     default_method_selected = "1033",
 
+    hybrid_mode = false,
+
     -- Restore the default input method state when the following events are triggered
     set_default_events = { "VimEnter", "FocusGained", "InsertLeave", "CmdlineLeave" },
     -- Restore the previous used input method state when the following events are triggered
@@ -87,6 +89,10 @@ local function set_opts(opts)
 
     if opts.default_im_select ~= nil then
         C.default_method_selected = opts.default_im_select
+    end
+
+    if opts.hybrid_mode ~= nil then
+        C.hybrid_mode = opts.hybrid_mode
     end
 
     if opts.default_command ~= nil then
@@ -215,6 +221,19 @@ M.setup = function(opts)
             callback = restore_default_im,
             group = group_id,
         })
+    end
+
+    if C.hybrid_mode == true then
+      vim.api.nvim_create_autocmd("TextChangedI", {
+        callback = function()
+            local line = vim.fn.getline(".")
+            local col = vim.fn.col(".") - 1
+            if col > 0 and line:sub(col, col) == " " then
+                vim.notify("Space detected in insert mode", vim.log.levels.INFO)
+            end
+        end,
+        group = group_id,
+      })
     end
 end
 
