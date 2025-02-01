@@ -10,6 +10,8 @@ fork 自 [im-select](https://github.com/keaising/im-select.nvim)
 
 如果空格前是英文，则判断这个单词之前是否为英文字符，如果是，什么都不做，否则切换为之前的输入法。
 
+添加一个 second_method_selected ，当删除字符后，如果光标前的字符是英文或半角，切换至默认输入法，否则切换至 second_method_selected。
+
 自动在 NeoVim 中切换输入法
 
 旧插件 [im-select](https://github.com/daipeihust/im-select) 近在 Macbook 上有效，我只是使用纯 lua 语言写了这个 im-select 插件。
@@ -208,6 +210,8 @@ $ ibus engine xkb:us::eng
             async_switch_im = true
 
             -- hybrid_mode
+            hybrid_mode = false
+            second_method_selected = "shuangpin",
         })
     end,
 }

@@ -8,6 +8,8 @@ When the hybrid input mode is enabled, it can automatically determine whether to
 
 If the character before the space is English, it checks whether the character before this word is an English character. If it is, it does nothing; otherwise, it switches to the previous input method.
 
+Add a `second_method_selected` option. When a character is deleted, if the character before the cursor is an English character or a half-width symbol, switch to the default input method; otherwise, switch to `second_method_selected`.
+
 Switch Input Method automatically depends on NeoVim's edit mode.
 
 The old vim plugins (such as [im-select](https://github.com/daipeihust/im-select)) works weird on my Macbook, so I just create this im-select in pure lua for NeoVim, it works charmingly!
@@ -206,6 +208,8 @@ Options with its default values
 
             -- Async run `default_command` to switch IM or not
             async_switch_im = true
+            hybrid_mode = false
+            second_method_selected = "shuangpin",
         })
     end,
 }

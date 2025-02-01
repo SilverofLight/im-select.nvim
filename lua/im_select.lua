@@ -42,6 +42,8 @@ local C = {
     -- default input method in normal mode.
     default_method_selected = "1033",
 
+    second_method_selected = "shuangpin",
+
     hybrid_mode = false,
 
     -- Restore the default input method state when the following events are triggered
@@ -192,38 +194,53 @@ local function restore_previous_im()
 end
 
 local function hybrid_im_mode()
-  local line = vim.fn.getline(".")
-  local col = vim.fn.col(".") - 2
-  local char_now_is_english = true
-  local char_before_space_is_english = true
-  if col > 0 then
-      local char = line:sub(col, col)
-      if char:match("[%a%p%d%s]") then
-          -- vim.notify("English character or symbol detected: " .. char, vim.log.levels.INFO)
-      else
-          -- vim.notify("Non-English character detected: " .. char, vim.log.levels.INFO)
-          char_now_is_english = false
-      end
-  end
+  local line_now = vim.fn.getline(".")
+  local col_now = vim.fn.col(".") - 1
 
-  local space_pos = line:sub(1, col):find("%s[^%s]*$")
-  if space_pos then
-      local prev_char = line:sub(space_pos - 1, space_pos - 1)
-      -- vim.notify("Character before last space: " .. prev_char, vim.log.levels.INFO)
-      if prev_char:match("[%a%p%d%s]") then
-          -- vim.notify("English character or symbol detected: " .. prev_char, vim.log.levels.INFO)
-      else
-          -- vim.notify("Non-English character detected: " .. prev_char, vim.log.levels.INFO)
-          char_before_space_is_english = false
-      end
-  end
+  if col_now > 0 and line_now:sub(col_now, col_now) == " " then
+    local line = vim.fn.getline(".")
+    local col = vim.fn.col(".") - 2
+    local char_now_is_english = true
+    local char_before_space_is_english = true
+    if col > 0 then
+        local char = line:sub(col, col)
+        if char:match("[%a%p%d%s]") then
+            -- vim.notify("English character or symbol detected: " .. char, vim.log.levels.INFO)
+        else
+            -- vim.notify("Non-English character detected: " .. char, vim.log.levels.INFO)
+            char_now_is_english = false
+        end
+    end
 
-  if char_now_is_english == false then
-    restore_default_im()
-    -- vim.notify("restore default im", vim.log.levels.INFO)
-  elseif char_now_is_english == true and char_before_space_is_english == false then
-    restore_previous_im()
-    -- vim.notify("restore previous im", vim.log.levels.INFO)
+    local space_pos = line:sub(1, col):find("%s[^%s]*$")
+    if space_pos then
+        local prev_char = line:sub(space_pos - 1, space_pos - 1)
+        -- vim.notify("Character before last space: " .. prev_char, vim.log.levels.INFO)
+        if prev_char:match("[%a%p%d%s]") then
+            -- vim.notify("English character or symbol detected: " .. prev_char, vim.log.levels.INFO)
+        else
+            -- vim.notify("Non-English character detected: " .. prev_char, vim.log.levels.INFO)
+            char_before_space_is_english = false
+        end
+    end
+
+    if char_now_is_english == false then
+      restore_default_im()
+      -- vim.notify("restore default im", vim.log.levels.INFO)
+    elseif char_now_is_english == true and char_before_space_is_english == false then
+      restore_previous_im()
+      -- vim.notify("restore previous im", vim.log.levels.INFO)
+    end
+  elseif col_now > 0 and not line_now:sub(col_now, col_now):match("[%a%p%d%s]") then
+    current = get_current_select(C.default_command)
+    if current ~= C.second_method_selected then
+        change_im_select(C.default_command, C.second_method_selected)
+    end
+  elseif col_now > 0 and line_now:sub(col_now, col_now):match("[%a%p%d%s]") then
+    current = get_current_select(C.default_command)
+    if current ~= C.default_method_selected then
+        change_im_select(C.default_command, C.default_method_selected)
+    end
   end
 end
 
@@ -264,10 +281,10 @@ M.setup = function(opts)
         callback = function()
             local line = vim.fn.getline(".")
             local col = vim.fn.col(".") - 1
-            if col > 0 and line:sub(col, col) == " " then
-                -- vim.notify("Space detected in insert mode", vim.log.levels.INFO)
-                hybrid_im_mode()
-            end
+            -- if col > 0 and line:sub(col, col) == " " then
+            --     -- vim.notify("Space detected in insert mode", vim.log.levels.INFO)
+            hybrid_im_mode()
+            -- end
         end,
         group = group_id,
       })
