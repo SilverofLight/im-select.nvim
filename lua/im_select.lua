@@ -232,12 +232,12 @@ local function hybrid_im_mode()
       -- vim.notify("restore previous im", vim.log.levels.INFO)
     end
   elseif col_now > 0 and not line_now:sub(col_now, col_now):match("[%a%p%d%s]") then
-    current = get_current_select(C.default_command)
+    local current = get_current_select(C.default_command)
     if current ~= C.second_method_selected then
         change_im_select(C.default_command, C.second_method_selected)
     end
   elseif col_now > 0 and line_now:sub(col_now, col_now):match("[%a%p%d%s]") then
-    current = get_current_select(C.default_command)
+    local current = get_current_select(C.default_command)
     if current ~= C.default_method_selected then
         change_im_select(C.default_command, C.default_method_selected)
     end
