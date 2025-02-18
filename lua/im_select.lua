@@ -125,6 +125,10 @@ local function set_opts(opts)
         C.keep_quiet_on_no_binary = true
     end
 
+    if opts.second_method_selected ~= nil then
+        C.second_method_selected = opts.second_method_selected
+    end
+
     if opts.async_switch_im ~= nil and opts.async_switch_im == false then
         C.async_switch_im = false
     end
