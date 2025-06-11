@@ -4,17 +4,11 @@
 
 fork 自 [im-select](https://github.com/keaising/im-select.nvim)
 
-在 keaising/im-select.nvim 的基础上，添加了一个用于混合输入的功能，在配置中使用 hybrid_mode = true 设置，默认为 false 
+在 keaising/im-select.nvim 的基础上，添加了一个用于混合输入的功能，在配置中使用 `hybrid_mode = true` 设置，默认为 `false`，同时需要设置 `default_im_select` 为英文输入法，`second_method_selected` 为你使用的中文输入法，暂不支持三个输入法之间的切换。
 
-开启混合输入模式后，可以在输入空格后自动判断是否应该切换输入法，如果输入空格前输入的是中文字符或全角符号，则切换为默认输入法（一般都会设置为英文输入法吧）
-
-如果空格前是英文，则判断这个单词之前是否为英文字符，如果是，什么都不做，否则切换为之前的输入法。
-
-添加一个 second_method_selected ，当删除字符后，如果光标前的字符是英文或半角，切换至默认输入法，否则切换至 second_method_selected。
+保留了原本自动切换输入法的功能，通过 `set_default_events` 和 `set_previous_events` 设置
 
 自动在 NeoVim 中切换输入法
-
-旧插件 [im-select](https://github.com/daipeihust/im-select) 近在 Macbook 上有效，我只是使用纯 lua 语言写了这个 im-select 插件。
 
 这个插件可以工作在：
 
@@ -29,23 +23,23 @@ fork 自 [im-select](https://github.com/keaising/im-select.nvim)
 
 [DEMO](https://youtu.be/wRJ-rMcvqTk)(youtube)
 
-## 逻辑
+## 混合输入逻辑
 
 ```mermaid
 flowchart LR
 A[输入或删除一个字符] --> |光标前是空格| B(检查空格前字符)
-    B --> |空格前是中文| C(切换为英文输入法)
+    B --> |空格前是中文| C(切换为英文输入法（默认输入法）)
     B --> |空格前是英文、半角符号或数字| D(向前再查找一个空格，检查该空格前的字符)
     D --> |不存在该空格| E(什么都不做)
-    D --> |空格前是中文| F(切换为中文输入法)
+    D --> |空格前是中文| F(切换为中文输入法（第二输入法）)
     D --> |空格前是英文、半角符号或数字| E
-    A --> |光标前是中文| G(检查当前输入法)
+    A --> |光标前是中文或全角符号| G(检查当前输入法)
     G --> |当前为中文输入法| H(什么都不做)
-    G --> |当前为英文输入法| I(切换为中文输入法)
+    G --> |当前为英文输入法| I(切换为中文输入法（第二输入法）)
     A --> |光标前是英文或数字| J(检查当前输入法)
     J --> |当前为英文输入法| L(什么都不做)
-    J --> |当前为中文输入法| K(切换为英文输入法)
-    A --> |光标前是符号| M(什么都不做)
+    J --> |当前为中文输入法| K(切换为英文输入法（默认输入法）)
+    A --> |光标前是半角符号| M(什么都不做)
 ```
 
 ## 1. 安装与检查可执行文件
@@ -203,7 +197,8 @@ $ ibus engine xkb:us::eng
             --               "1" for Fcitx
             --               "xkb:us::eng" for ibus
             -- You can use `im-select` or `fcitx5-remote -n` to get the IM's name
-            default_im_select  = "com.apple.keylayout.ABC",
+            default_im_select  = "com.apple.keylayout.ABC", -- 你的英文输入法
+            second_method_selected = "shuangpin", -- 你的中文输入法（第二输入法）
 
             -- Can be binary's name, binary's full path, or a table, e.g. 'im-select',
             -- '/usr/local/bin/im-select' for binary without extra arguments,
@@ -226,11 +221,10 @@ $ ibus engine xkb:us::eng
             keep_quiet_on_no_binary = false,
 
             -- Async run `default_command` to switch IM or not
-            async_switch_im = true
+            async_switch_im = true,
 
             -- hybrid_mode
-            hybrid_mode = false
-            second_method_selected = "shuangpin",
+            hybrid_mode = false -- 设置为 true 开启混合输入
         })
     end,
 }
