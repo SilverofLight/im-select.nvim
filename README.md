@@ -21,7 +21,7 @@ fork 自 [im-select](https://github.com/keaising/im-select.nvim)
 
 ## DEMO
 
-[DEMO](https://youtu.be/wRJ-rMcvqTk)(youtube)
+![DEMO](./src/hyprIm.gif)
 
 ## 混合输入逻辑
 
