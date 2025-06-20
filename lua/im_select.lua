@@ -201,7 +201,7 @@ local function hybrid_im_mode()
   local line_now = vim.fn.getline(".")
   local col_now = vim.fn.col(".") - 1
 
-  if col_now == 0 or line_now:sub(col_now, col_now + 1):match("[%a%p%d]") then
+  if col_now == 0 or line_now:sub(col_now + 1, col_now + 1):match("[%a%p%d]") then
     return
   end
   if col_now > 0 and line_now:sub(col_now, col_now) == " " then
